@@ -1,71 +1,162 @@
 import 'package:flutter/material.dart';
-import 'package:test1/main.dart';
 
-class LanguageScreen extends StatefulWidget {
+
+class FoodOrderPage extends StatefulWidget {
   @override
-  State<LanguageScreen> createState() => _LanguageScreenState();
+  State<FoodOrderPage> createState() => _FoodOrderPageState();
 }
 
-class _LanguageScreenState extends State<LanguageScreen> {
+class _FoodOrderPageState extends State<FoodOrderPage> {
+  bool pizza = false;
+  bool burger = false;
+  bool sandwich = false;
+  bool dosa = false;
 
-  List<String> language = [
-    "JAVA",
-    "PHP",
-    "HTML",
-    "DART",
-    "C++",
-    "C",
-    "PYTHON",
-    "C#"
-  ];
+  int total = 0;
+
+  void calculateTotal()
+  {
+    total = 0;
+    if (pizza) total += 150;
+    if (burger) total += 100;
+    if (sandwich) total += 80;
+    if (dosa) total += 120;
+  }
+
+  Widget foodItem({
+    required String name,
+    required int price,
+    required bool value,
+    required Function(bool?) onChanged,
+    required IconData icon,
+  }) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: CheckboxListTile(
+        secondary: Icon(icon, color: Colors.orange, size: 30),
+        title: Text(
+          name,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text("₹ $price"),
+        value: value,
+        activeColor: Colors.orange,
+        onChanged: onChanged,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: Text("Languages"),
+        title: const Text("Food Ordering App"),
+        backgroundColor: Colors.orange,
+        centerTitle: true,
       ),
-      body: Column(
-        children: [
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          children: [
 
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: Image.network(
-              "https://p7.hiclipart.com/preview/321/970/459/programming-language-computer-programming-java-programacion.jpg",
-              height: 120,
-              fit: BoxFit.cover,
+            const Text(
+              "Select Your Items",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-          ),
 
-          Expanded(
-            child: GridView.builder(
-              padding: EdgeInsets.all(10),
-              itemCount: language.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemBuilder: (context, index) {
-                return Container(
-                  color: Colors.brown.shade400,
-                  child: Center(
-                    child: Text(
-                      language[index],
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                );
+            const SizedBox(height: 10),
+
+            foodItem(
+              name: "Pizza",
+              price: 150,
+              value: pizza,
+              icon: Icons.local_pizza,
+              onChanged: (val) {
+                setState(() {
+                  pizza = val!;
+                  calculateTotal();
+                });
               },
             ),
-          ),
-        ],
-      ),
 
+            foodItem(
+              name: "Burger",
+              price: 100,
+              value: burger,
+              icon: Icons.fastfood,
+              onChanged: (val) {
+                setState(() {
+                  burger = val!;
+                  calculateTotal();
+                });
+              },
+            ),
+
+            foodItem(
+              name: "Sandwich",
+              price: 80,
+              value: sandwich,
+              icon: Icons.lunch_dining,
+              onChanged: (val) {
+                setState(() {
+                  sandwich = val!;
+                  calculateTotal();
+                });
+              },
+            ),
+
+            foodItem(
+              name: "Dosa",
+              price: 120,
+              value: dosa,
+              icon: Icons.restaurant,
+              onChanged: (val) {
+                setState(() {
+                  dosa = val!;
+                  calculateTotal();
+                });
+              },
+            ),
+
+            const Spacer(),
+
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 8,
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Total Bill",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "₹ $total",
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
