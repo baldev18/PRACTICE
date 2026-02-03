@@ -1,0 +1,42 @@
+import 'dart:async';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart';
+
+class splashscreen extends StatefulWidget{
+  @override
+  State<splashscreen> createState()=>splashscreenState();
+}
+
+class splashscreenState extends State<splashscreen>
+{
+
+  @override
+  void initState()
+  {
+    Timer(Duration(seconds: 3),() => Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) =>Firstscreen));
+  }
+  @override
+  Widget build(BuildContext context)
+  {
+      return Scaffold(
+        body: Center()
+      );
+  }
+  void checkconnectivity() async {
+    List<ConnectivityResult> connectivityResult =
+    await Connectivity().checkConnectivity();
+
+    if (connectivityResult.contains(ConnectivityResult.mobile) ||
+        connectivityResult.contains(ConnectivityResult.wifi)) {
+
+      Timer(
+        Duration(seconds: 3),
+            () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Firstscreen()),
+        ),
+      );
+    }
+  }
+
+}
