@@ -1,0 +1,151 @@
+import 'dart:convert';
+
+import 'package:baldevsinh1/firstscreen.dart';
+import 'package:baldevsinh1/signup.dart' show Signup;
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+class Signin extends StatefulWidget {
+  const Signin({super.key});
+
+  @override
+  State<Signin> createState() => _SigninState();
+}
+
+class _SigninState extends State<Signin> {
+  TextEditingController email = TextEditingController();
+  TextEditingController pass = TextEditingController();
+
+  late SharedPreferences sharedPreferences;
+  late String myemail, mypass;
+
+  var _formkey = GlobalKey<FormState>();
+  var newuser;
+
+  @override
+  void initState() {
+    super.initState();
+    checkvalue();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Form(
+        key: _formkey,
+        child: Padding(
+          padding: const EdgeInsets.all(48.0),
+          child: Center(
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: email,
+                  decoration: const InputDecoration(
+                    hintText: "Enter Email",
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter Email";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: pass,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    hintText: "Enter Password",
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter Password";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () async {
+                    myemail = email.text.toString();
+                    mypass = pass.text.toString();
+
+                    if (_formkey.currentState!.validate()) {
+                      sharedPreferences =
+                      await SharedPreferences.getInstance();
+
+                      checkdata();
+
+                      sharedPreferences.setString("email", myemail);
+                      sharedPreferences.setBool("tops", false);
+                    }
+                  },
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Signup(),
+                      ),
+                    );
+                  },
+                  child: const Text("Do you want to sign in?"),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void checkdata() async {
+    var url = "https://prakrutitech.xyz/Seminar/signin.php";
+    var resp = await http.post(
+      Uri.parse(url),
+      body: {
+        "e1": myemail,
+        "p1": mypass,
+      },
+    );
+
+    var data = json.decode(resp.body);
+
+    if (data == 0) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Login Fail")));
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Login Success")));
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Signup()),
+      );
+    }
+  }
+
+  checkvalue() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    newuser = sharedPreferences.getBool("tops") ?? true;
+
+    if (newuser == false) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Signup()),
+        );
+      });
+    }
+  }
+}

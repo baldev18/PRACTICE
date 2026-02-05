@@ -1,0 +1,55 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'expenseadd.dart';
+import 'expenseview.dart';
+import 'loginscreen.dart';
+
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  String name = "";
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  void getData() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    setState(() {
+      name = sp.getString("name") ?? "";
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Welcome $name"),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              SharedPreferences sp = await SharedPreferences.getInstance();
+              sp.clear();
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const Login()));
+            },
+            icon: const Icon(Icons.logout),
+          )
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const ExpenseAdd()));
+        },
+        child: const Icon(Icons.add),
+      ),
+      body: const ExpenseView(),
+    );
+  }
+}

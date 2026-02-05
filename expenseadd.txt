@@ -1,0 +1,53 @@
+import 'package:flutter/material.dart';
+
+class ExpenseAdd extends StatefulWidget {
+  const ExpenseAdd({super.key});
+
+  @override
+  State<ExpenseAdd> createState() => _ExpenseAddState();
+}
+
+class _ExpenseAddState extends State<ExpenseAdd> {
+  String category = "Food";
+  TextEditingController amount = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    String date = DateFormat("dd-MM-yyyy").format(DateTime.now());
+
+    return Scaffold(
+      appBar: AppBar(title: const Text("Add Expense")),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Text("Date: $date"),
+            TextField(
+              controller: amount,
+              decoration: const InputDecoration(labelText: "Expense Amount"),
+            ),
+            DropdownButton<String>(
+              value: category,
+              items: ["Food", "Travel", "Shopping"]
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                  .toList(),
+              onChanged: (v) {
+                setState(() {
+                  category = v!;
+                });
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Expense Add"),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  DateFormat(String s) {}
+}

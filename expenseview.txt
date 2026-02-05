@@ -1,0 +1,24 @@
+import 'package:flutter/material.dart';
+
+class ExpenseView extends StatelessWidget {
+  const ExpenseView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        ListTile(
+          title: const Text("Food - ₹500"),
+          subtitle: const Text("12-02-2026"),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
+              IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}

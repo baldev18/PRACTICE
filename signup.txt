@@ -1,0 +1,29 @@
+import 'package:flutter/material.dart';
+
+class Signup extends StatelessWidget {
+  const Signup({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Signup")),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            TextField(decoration: const InputDecoration(labelText: "Name")),
+            TextField(decoration: const InputDecoration(labelText: "Email")),
+            TextField(decoration: const InputDecoration(labelText: "Password")),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Signup"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
